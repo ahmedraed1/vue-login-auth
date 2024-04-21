@@ -10,7 +10,69 @@
           >
             Create and account
           </h1>
-          <form class="space-y-4 md:space-y-6">
+          <div class="space-y-4 md:space-y-6">
+            <div class="grid gap-6 mb-6 md:grid-cols-2">
+              <div>
+                <label
+                  for="first_name"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >First name</label
+                >
+                <input
+                  type="text"
+                  id="first_name"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="John"
+                  required
+                  v-model="data.firstName"
+                />
+              </div>
+              <div>
+                <label
+                  for="last_name"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >Last name</label
+                >
+                <input
+                  type="text"
+                  id="last_name"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Doe"
+                  required
+                  v-model="data.lastName"
+                />
+              </div>
+              <div>
+                <label
+                  for="age"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >Age</label
+                >
+                <input
+                  type="number"
+                  id="age"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="age"
+                  required
+                  v-model="data.age"
+                />
+              </div>
+              <div>
+                <label
+                  for="user"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >Username</label
+                >
+                <input
+                  type="text"
+                  id="user"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="username"
+                  required
+                  v-model="data.username"
+                />
+              </div>
+            </div>
             <div>
               <label
                 for="email"
@@ -24,6 +86,7 @@
                 class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="name@company.com"
                 required=""
+                v-model="data.email"
               />
             </div>
             <div>
@@ -39,23 +102,10 @@
                 placeholder="••••••••"
                 class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 required=""
+                v-model="data.password"
               />
             </div>
-            <div>
-              <label
-                for="confirm-password"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >Confirm password</label
-              >
-              <input
-                type="confirm-password"
-                name="confirm-password"
-                id="confirm-password"
-                placeholder="••••••••"
-                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required=""
-              />
-            </div>
+
             <div class="flex items-start">
               <div class="flex items-center h-5">
                 <input
@@ -64,6 +114,7 @@
                   type="checkbox"
                   class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
                   required=""
+                  v-model="iAccept"
                 />
               </div>
               <div class="ml-3 text-sm">
@@ -78,6 +129,8 @@
               </div>
             </div>
             <button
+              :disabled="!iAccept"
+              @click="sendData"
               class="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
               Create an account
@@ -91,17 +144,43 @@
                 >Login here</a
               >
             </p>
-          </form>
+          </div>
         </div>
       </div>
     </div>
   </section>
 </template>
 <script setup>
-import { defineEmits } from 'vue'
+import { ref, defineEmits } from 'vue'
 const emit = defineEmits(['signIn'])
+import axios from 'axios'
 
 const goSignIn = function () {
   emit('signIn')
 }
+
+const data = ref({
+  firstName: '',
+  lastName: '',
+  username: '',
+  age: '',
+  email: '',
+  password: ''
+})
+
+const sendData = function () {
+  axios
+    .post('http://localhost:3000/auth/register', {
+      firstName: data.value.firstName,
+      surname: data.value.lastName,
+      username: data.value.username,
+      age: data.value.age,
+      email: data.value.email,
+      password: data.value.password
+    })
+    .then((response) => console.log(response.data))
+    .catch((error) => console.log(error))
+}
+
+const iAccept = ref(false)
 </script>
