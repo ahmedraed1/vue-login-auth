@@ -153,6 +153,7 @@
 <script setup>
 import { ref, defineEmits } from 'vue'
 const emit = defineEmits(['signIn'])
+import router from '@/router'
 import axios from 'axios'
 
 const goSignIn = function () {
@@ -178,7 +179,12 @@ const sendData = function () {
       email: data.value.email,
       password: data.value.password
     })
-    .then((response) => console.log(response.data))
+    .then((response) => {
+      if (response.data.login) {
+        localStorage.setItem('token', response.data.secret)
+        router.push({ path: '/hello' })
+      }
+    })
     .catch((error) => console.log(error))
 }
 

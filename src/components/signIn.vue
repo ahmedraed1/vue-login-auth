@@ -86,6 +86,7 @@
 </template>
 <script setup>
 import { ref, defineEmits } from 'vue'
+import router from '@/router'
 const emit = defineEmits(['signUp'])
 import axios from 'axios'
 
@@ -104,7 +105,12 @@ const sendData = function () {
       input: data.value.input,
       password: data.value.password
     })
-    .then((response) => console.log(response.data))
+    .then((response) => {
+      if (response.data.login) {
+        localStorage.setItem('token', response.data.secret)
+        router.push({ path: '/hello' })
+      }
+    })
     .catch((error) => console.log(error))
 }
 </script>
